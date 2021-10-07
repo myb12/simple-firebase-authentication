@@ -1,7 +1,9 @@
 import './App.css';
 import initializeAuthentication from './Firebase/firebase.initialize';
-import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, signInWithPopup, signOut, createUserWithEmailAndPassword } from "firebase/auth";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
+import { Container, Form, Button } from 'react-bootstrap';
 
 initializeAuthentication();
 
@@ -10,7 +12,8 @@ const provider = new GoogleAuthProvider();
 
 
 function App() {
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState({});
+  const [isLogin, setIsLogin] = useState(false)
   const auth = getAuth();
 
   const handleSignIn = () => {
@@ -36,13 +39,14 @@ function App() {
       })
   }
 
+  const handleRegistration = (e) => {
+    e.preventDefault();
+  }
+
+
 
   return (
     <div className="App">
-      <button onClick={handleSignIn}>Sign in with google</button>
-      <br />
-      <button onClick={handleSignOut}>Sign Out</button>
-      <br />
       {
         user.name && <div>
           <h2>Welcome {user.name}</h2>
@@ -50,6 +54,38 @@ function App() {
           <img src={user.photo} alt="" />
         </div>
       }
+      <br />
+      <Container>
+        <Form onSubmit={handleRegistration} >
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control type="email" placeholder="Enter email" />
+            <Form.Text className="text-muted">
+              We'll never share your email with anyone else.
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" placeholder="Password" />
+          </Form.Group>
+          <Form.Group className="mb-3 check-box" controlId="formBasicCheckbox">
+            <Form.Check type="checkbox" label="Check me out" />
+          </Form.Group>
+          <Button variant="success" type="submit" className="me-2">
+            {
+              isLogin ? 'Log in' : 'Register'
+            }
+          </Button>
+          <Button onClick={handleSignIn} variant="warning" className="me-2">
+            Sign in with google
+          </Button>
+          <Button onClick={handleSignOut} variant="danger" className="me-2">
+            Sign Out
+          </Button>
+        </Form>
+      </Container>
+
     </div>
   );
 }
